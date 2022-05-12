@@ -18,9 +18,16 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation group: 'com.microsoft.cognitiveservices.speech', name: 'client-sdk', version: "1.21.0", ext: "jar"
+
+	compileOnly("javax.validation:validation-api:2.0.1.Final")
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'javax.validation:validation-api:2.0.1.Final'
+	
+	
 }
 
 tasks.named('test') {
