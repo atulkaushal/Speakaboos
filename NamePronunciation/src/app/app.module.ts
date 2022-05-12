@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { StandardpronunciationComponent } from './standardpronunciation/standardpronunciation.component';
+import {MatButtonModule} from '@angular/material/button';
+import {FormGroupDirective,FormsModule} from '@angular/forms'
 
 @NgModule({
   declarations: [
@@ -9,10 +11,12 @@ import { StandardpronunciationComponent } from './standardpronunciation/standard
     StandardpronunciationComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    MatButtonModule,
+    FormsModule
 
   ],
-  providers: [],
+  providers: [FormGroupDirective],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
