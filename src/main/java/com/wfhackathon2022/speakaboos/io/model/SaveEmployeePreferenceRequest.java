@@ -9,22 +9,22 @@ import lombok.ToString;
 
 @EqualsAndHashCode
 @ToString
-public class EmployeeDetails {
+public class SaveEmployeePreferenceRequest {
 
 	@Getter @Setter
 	@JsonProperty("employeeId")
-	private Integer employeeId;
+	private int employeeId;
 	
 	@Getter @Setter
-	@JsonProperty("legalFirstName")
-	private String legalFirstName;
+	@JsonProperty("optOutFlag")
+	private Boolean optOutFlag;
 	
 	@Getter @Setter
-	@JsonProperty("legalLastName")
-	private String legalLastName;
+	@JsonProperty("locale")
+	private String locale;
 	
 	@Getter @Setter
-	@JsonProperty("preferredName")
-	private String preferredName;
+	@JsonProperty("speed")
+	private Integer speed;	
 	
 }

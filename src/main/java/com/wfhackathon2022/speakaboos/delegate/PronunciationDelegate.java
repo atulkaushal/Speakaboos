@@ -11,11 +11,15 @@ import org.springframework.stereotype.Component;
 
 import com.wfhackathon2022.speakaboos.dao.PronunciationDAO;
 import com.wfhackathon2022.speakaboos.entity.Employee;
+import com.wfhackathon2022.speakaboos.entity.PronunciationPreferences;
 import com.wfhackathon2022.speakaboos.exception.PronunciationException;
+import com.wfhackathon2022.speakaboos.helper.Helper;
 import com.wfhackathon2022.speakaboos.io.model.EmployeeDetails;
 import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsRequest;
 import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsResponse;
 import com.wfhackathon2022.speakaboos.io.model.ListEmployeesResponse;
+import com.wfhackathon2022.speakaboos.io.model.SaveEmployeePreferenceRequest;
+import com.wfhackathon2022.speakaboos.io.model.StatusMessageResponse;
 
 @Component
 public class PronunciationDelegate {
@@ -25,6 +29,8 @@ public class PronunciationDelegate {
 	@Autowired
 	private PronunciationDAO pronunciationDAO;
 	
+	@Autowired
+	private Helper helper;
 	
 	public GetEmployeeDetailsResponse getEmployeeDetails(GetEmployeeDetailsRequest request){
 		LOG.info("PronunciationDelegate::getEmployeeDetails::begin");
@@ -43,6 +49,7 @@ public class PronunciationDelegate {
 	}
 	
 	public ListEmployeesResponse listEmployees() {
+		LOG.info("PronunciationDelegate::listEmployees::begin");
 		ListEmployeesResponse response = new ListEmployeesResponse();
 		List<Employee> employees = pronunciationDAO.getEmployeeList();
 		List<EmployeeDetails> employeeDetails = new ArrayList<EmployeeDetails>();
@@ -57,6 +64,19 @@ public class PronunciationDelegate {
 					}).collect(Collectors.toList());
 			response.setEmployeeDetailsList(employeeDetails);
 			}			
+			LOG.info("PronunciationDelegate::listEmployees::end");
 			return response;
 		}
+	
+	public StatusMessageResponse savePronunciationInformation(SaveEmployeePreferenceRequest request) {
+		LOG.info("PronunciationDelegate::savePronunciationInformation::begin");
+		PronunciationPreferences preference = new PronunciationPreferences();
+		preference.setEmployeeId(request.getEmployeeId());
+		preference.setLocale(request.getLocale());
+		preference.setOptOutFlag(request.getOptOutFlag());
+		preference.setSpeed(request.getSpeed());
+		pronunciationDAO.savePronunciationInformation(preference);
+		LOG.info("PronunciationDelegate::savePronunciationInformation::end");
+		return helper.createStatusMessageResponse("Employee preference saved successfully");
+	}
 }

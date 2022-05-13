@@ -18,6 +18,8 @@ import com.wfhackathon2022.speakaboos.delegate.PronunciationDelegate;
 import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsRequest;
 import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsResponse;
 import com.wfhackathon2022.speakaboos.io.model.ListEmployeesResponse;
+import com.wfhackathon2022.speakaboos.io.model.SaveEmployeePreferenceRequest;
+import com.wfhackathon2022.speakaboos.io.model.StatusMessageResponse;
 
 @Controller
 public class PronunciationController {
@@ -34,11 +36,13 @@ public class PronunciationController {
 		return null;
 	}
 	
-	@RequestMapping(value = "/V1/savePronunciationInformation/V1", method = RequestMethod.POST, produces = { "application/json" }, consumes = { "multipart/form-data" } )
-	public ResponseEntity<MultiValueMap<String, Object>> savePronunciationInformation(
-			@Valid @RequestBody String request, HttpServletRequest req, HttpServletResponse res){
-		
-		return null;
+	@RequestMapping(value = "/V1/savePronunciationInformation/V1", method = RequestMethod.POST, produces = { "application/json" }, consumes = { "application/json" } )
+	public ResponseEntity<StatusMessageResponse> savePronunciationInformation(
+			@Valid @RequestBody SaveEmployeePreferenceRequest request, HttpServletRequest req, HttpServletResponse res){
+		LOG.info("PronunciationController::savePronunciationInformation::begin");
+		StatusMessageResponse response = pronunciationDelegate.savePronunciationInformation(request);
+		LOG.info("PronunciationController::savePronunciationInformation::end");
+		return new ResponseEntity<StatusMessageResponse>(response, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/V1/getEmployeeDetails/V1", method = RequestMethod.POST, produces = { "application/json" }, consumes = { "application/json" } )
