@@ -30,7 +30,7 @@ public class StatusMessage {
 	
 	@JsonProperty("type")
 	@Getter @Setter
-	private String type = null;
+	private TypeEnum type = null;
 	
 	@JsonProperty("code")
 	@Getter @Setter
