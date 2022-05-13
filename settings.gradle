@@ -1,1 +1,7 @@
 rootProject.name = 'Speakaboos'
+
+include 'speakaboos-api'
+include 'speakaboos-ui'
+
+//project(':speakaboos-ui').projectDir = file('./speakaboos-ui')
+//project(":speakaboos-api").projectDir = file('./speakaboos-api')

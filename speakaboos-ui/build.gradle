@@ -1,0 +1,19 @@
+plugins {
+	id 'java'
+  id "com.github.node-gradle.node" version '3.2.1'
+}
+
+
+
+node{
+  version = '16.15.0'
+  npmVersion= '8.10.0'
+  download = true
+}
+
+jar.dependsOn 'npm_run_build'
+
+jar{
+  from 'dist/speakaboos-ui' into 'src/main/resources/static'
+}
+
