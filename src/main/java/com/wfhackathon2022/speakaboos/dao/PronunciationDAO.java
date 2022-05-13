@@ -1,5 +1,6 @@
 package com.wfhackathon2022.speakaboos.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
@@ -23,5 +24,13 @@ public class PronunciationDAO {
 		LOG.info("PronunciationDAO::getEmployeeDetails::end");
 		return optionalEmployee;
 	}
+	
+	public List<Employee> getEmployeeList() {
+		LOG.info("PronunciationDAO::getEmployeeList::begin");
+		List<Employee> employeeList = employeeRepository.findAll();
+		LOG.info("PronunciationDAO::getEmployeeList::end");
+		return employeeList;
+	}
+	
 	
 }

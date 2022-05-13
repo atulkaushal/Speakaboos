@@ -1,6 +1,9 @@
 package com.wfhackathon2022.speakaboos.delegate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +12,10 @@ import org.springframework.stereotype.Component;
 import com.wfhackathon2022.speakaboos.dao.PronunciationDAO;
 import com.wfhackathon2022.speakaboos.entity.Employee;
 import com.wfhackathon2022.speakaboos.exception.PronunciationException;
+import com.wfhackathon2022.speakaboos.io.model.EmployeeDetails;
 import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsRequest;
 import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsResponse;
+import com.wfhackathon2022.speakaboos.io.model.ListEmployeesResponse;
 
 @Component
 public class PronunciationDelegate {
@@ -36,4 +41,21 @@ public class PronunciationDelegate {
 		LOG.info("PronunciationDelegate::getEmployeeDetails::end");
 		return response;
 	}
+	
+	public ListEmployeesResponse listEmployees() {
+		ListEmployeesResponse response = new ListEmployeesResponse();
+		List<Employee> employees = pronunciationDAO.getEmployeeList();
+		List<EmployeeDetails> employeeDetails = new ArrayList<EmployeeDetails>();
+			if(!employees.isEmpty()) {
+			 employeeDetails = employees.stream()
+					.map(e -> {
+						EmployeeDetails empDetails = new EmployeeDetails();
+						empDetails.setEmployeeId(e.getEmployeeId());
+						empDetails.setLegalFirstName(e.getLegalFirstName());
+						empDetails.setLegalLastName(e.getLegalLastName());						
+					}).collect(Collectors.toList());
+			response.setEmployeeDetailsList(employeeDetails);
+			}			
+			return response;
+		}
 }
