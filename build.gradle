@@ -34,6 +34,8 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 	
 	implementation("org.hibernate:hibernate-validator:7.0.4.Final")
+	implementation("com.microsoft.sqlserver:mssql-jdbc:10.2.0.jre11")
+	
 	
 }
 
