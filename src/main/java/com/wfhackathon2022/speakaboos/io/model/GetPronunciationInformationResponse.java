@@ -1,7 +1,5 @@
 package com.wfhackathon2022.speakaboos.io.model;
 
-import javax.validation.constraints.NotNull;
-
 import org.hibernate.validator.constraints.Range;
 import org.springframework.validation.annotation.Validated;
 
@@ -10,16 +8,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Validated
 @EqualsAndHashCode
-@ToString
-public class GetEmployeeDetailsRequest {
+public class GetPronunciationInformationResponse {
 
-	@NotNull
-	@Range(min = 1)
 	@Getter @Setter
-	@JsonProperty("employeeId")
-	private Integer employeeId;
+	@JsonProperty("language")	
+	private String language;
+	
+	@Getter @Setter
+	@Range(min = 1, max = 3)
+	@JsonProperty("speed")	
+	private Integer speed;
+	
 }

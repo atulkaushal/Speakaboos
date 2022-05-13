@@ -10,16 +10,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Validated
 @EqualsAndHashCode
-@ToString
-public class GetEmployeeDetailsRequest {
+public class GetPronunciationInformationRequest {
 
 	@NotNull
 	@Range(min = 1)
 	@Getter @Setter
 	@JsonProperty("employeeId")
 	private Integer employeeId;
+	
+	@NotNull
+	@Getter @Setter
+	@JsonProperty("name")	
+	private String name;
+	
+	@Getter @Setter
+	@JsonProperty("language")	
+	private String language;
+	
+	@Getter @Setter
+	@Range(min = 1, max = 3)
+	@JsonProperty("speed")	
+	private Integer speed;
 }

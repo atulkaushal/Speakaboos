@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.wfhackathon2022.speakaboos.entity.Employee;
 import com.wfhackathon2022.speakaboos.entity.PronunciationPreferences;
-import com.wfhackathon2022.speakaboos.io.model.SaveEmployeePreferenceRequest;
 import com.wfhackathon2022.speakaboos.repository.EmployeeRepository;
 import com.wfhackathon2022.speakaboos.repository.PronunciationPreferencesRepository;
 
@@ -19,10 +18,10 @@ public class PronunciationDAO {
 	private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(PronunciationDAO.class);
 	
 	@Autowired
-	EmployeeRepository employeeRepository;
+	private EmployeeRepository employeeRepository;
 	
 	@Autowired
-	PronunciationPreferencesRepository pronunciationPreferencesRepository;
+	private PronunciationPreferencesRepository pronunciationPreferencesRepository;
 	
 	public Optional<Employee> getEmployeeDetails(Integer employeeId) {
 		LOG.info("PronunciationDAO::getEmployeeDetails::begin");
@@ -43,5 +42,12 @@ public class PronunciationDAO {
 		pronunciationPreferencesRepository.save(preference);
 		LOG.info("PronunciationDAO::savePronunciationInformation::end");
 	}
-	
+
+	public Optional<PronunciationPreferences> getPronunciationPreferences(Integer employeeId){
+		LOG.info("PronunciationDAO::getPronunciationPreferences::begin");
+		Optional<PronunciationPreferences> optionalPronunciationPreferences = pronunciationPreferencesRepository.findById(employeeId);
+		LOG.info("PronunciationDAO::getPronunciationPreferences::end");
+		return optionalPronunciationPreferences;
+	}
+		
 }

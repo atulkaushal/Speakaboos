@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.wfhackathon2022.speakaboos.dao.PronunciationDAO;
 import com.wfhackathon2022.speakaboos.entity.Employee;
@@ -17,9 +19,12 @@ import com.wfhackathon2022.speakaboos.helper.Helper;
 import com.wfhackathon2022.speakaboos.io.model.EmployeeDetails;
 import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsRequest;
 import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsResponse;
+import com.wfhackathon2022.speakaboos.io.model.GetPronunciationInformationRequest;
+import com.wfhackathon2022.speakaboos.io.model.GetPronunciationInformationResponse;
 import com.wfhackathon2022.speakaboos.io.model.ListEmployeesResponse;
 import com.wfhackathon2022.speakaboos.io.model.SaveEmployeePreferenceRequest;
 import com.wfhackathon2022.speakaboos.io.model.StatusMessageResponse;
+import com.wfhackathon2022.speakaboos.service.AzureCognitiveServie;
 
 @Component
 public class PronunciationDelegate {
@@ -32,10 +37,13 @@ public class PronunciationDelegate {
 	@Autowired
 	private Helper helper;
 	
-	public GetEmployeeDetailsResponse getEmployeeDetails(GetEmployeeDetailsRequest request){
+	@Autowired
+	private AzureCognitiveServie azureCognitiveServie;
+
+	public GetEmployeeDetailsResponse getEmployeeDetails(GetEmployeeDetailsRequest request) {
 		LOG.info("PronunciationDelegate::getEmployeeDetails::begin");
 		Optional<Employee> optionalEmployee = pronunciationDAO.getEmployeeDetails(request.getEmployeeId());
-		if(optionalEmployee.isEmpty()) {
+		if (optionalEmployee.isEmpty()) {
 			throw new PronunciationException("No employee found", "WFH9001");
 		}
 		Employee employee = optionalEmployee.get();
@@ -47,27 +55,27 @@ public class PronunciationDelegate {
 		LOG.info("PronunciationDelegate::getEmployeeDetails::end");
 		return response;
 	}
-	
+
 	public ListEmployeesResponse listEmployees() {
 		LOG.info("PronunciationDelegate::listEmployees::begin");
 		ListEmployeesResponse response = new ListEmployeesResponse();
 		List<Employee> employees = pronunciationDAO.getEmployeeList();
 		List<EmployeeDetails> employeeDetails = new ArrayList<EmployeeDetails>();
-			if(!employees.isEmpty()) {
-			 employeeDetails = employees.stream()
-					.map(e -> {
-					EmployeeDetails empDetails = new EmployeeDetails();
-					empDetails.setEmployeeId(e.getEmployeeId());
-					empDetails.setLegalFirstName(e.getLegalFirstName());
-					empDetails.setLegalLastName(e.getLegalLastName());
-					return empDetails;
-					}).collect(Collectors.toList());
-			response.setEmployeeDetailsList(employeeDetails);
-			}			
-			LOG.info("PronunciationDelegate::listEmployees::end");
-			return response;
-		}
-	
+		if(!employees.isEmpty()) {
+		 employeeDetails = employees.stream()
+				.map(e -> {
+				EmployeeDetails empDetails = new EmployeeDetails();
+				empDetails.setEmployeeId(e.getEmployeeId());
+				empDetails.setLegalFirstName(e.getLegalFirstName());
+				empDetails.setLegalLastName(e.getLegalLastName());
+				return empDetails;
+				}).collect(Collectors.toList());
+		response.setEmployeeDetailsList(employeeDetails);
+		}			
+		LOG.info("PronunciationDelegate::listEmployees::end");
+		return response;
+	}
+
 	public StatusMessageResponse savePronunciationInformation(SaveEmployeePreferenceRequest request) {
 		LOG.info("PronunciationDelegate::savePronunciationInformation::begin");
 		PronunciationPreferences preference = new PronunciationPreferences();
@@ -78,5 +86,35 @@ public class PronunciationDelegate {
 		pronunciationDAO.savePronunciationInformation(preference);
 		LOG.info("PronunciationDelegate::savePronunciationInformation::end");
 		return helper.createStatusMessageResponse("Employee preference saved successfully");
+	}
+
+	public MultiValueMap<String, Object> getPronunciationInformation(GetPronunciationInformationRequest request) {
+		LOG.info("PronunciationDelegate::getPronunciationInformation::begin");
+		Optional<PronunciationPreferences> optionalPronunciationPreferences = pronunciationDAO
+				.getPronunciationPreferences(request.getEmployeeId());
+		String language = "en-US";
+		Integer speed = Integer.valueOf(1);
+		if (optionalPronunciationPreferences.isPresent()) {
+			PronunciationPreferences pronunciationPreferences = optionalPronunciationPreferences.get();
+			language = request.getLanguage() != null ? request.getLanguage()
+					: pronunciationPreferences.getLocale() != null ? pronunciationPreferences.getLocale() : language;
+			speed = request.getSpeed() != null ? request.getSpeed()
+					: pronunciationPreferences.getSpeed() != null ? pronunciationPreferences.getSpeed() : speed;
+		}
+		byte[] audio = azureCognitiveServie.retrieveSpeech(request.getName(), request.getLanguage(),
+				request.getSpeed());
+
+		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+
+		map.add("nameaudio.mp3", audio);
+
+		GetPronunciationInformationResponse response = new GetPronunciationInformationResponse();
+		response.setLanguage(language);
+		response.setSpeed(speed);
+
+		map.add("preferences", response);
+
+		LOG.info("PronunciationDelegate::getPronunciationInformation::end");
+		return map;
 	}
 }

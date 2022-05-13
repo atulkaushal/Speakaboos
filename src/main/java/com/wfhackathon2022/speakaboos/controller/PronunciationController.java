@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.wfhackathon2022.speakaboos.delegate.PronunciationDelegate;
 import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsRequest;
 import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsResponse;
+import com.wfhackathon2022.speakaboos.io.model.GetPronunciationInformationRequest;
 import com.wfhackathon2022.speakaboos.io.model.ListEmployeesResponse;
 import com.wfhackathon2022.speakaboos.io.model.SaveEmployeePreferenceRequest;
 import com.wfhackathon2022.speakaboos.io.model.StatusMessageResponse;
@@ -31,9 +33,12 @@ public class PronunciationController {
 	
 	@RequestMapping(value = "/V1/getPronunciationInformation/V1", method = RequestMethod.POST, produces = { "multipart/form-data" }, consumes = { "application/json" } )
 	public ResponseEntity<MultiValueMap<String, Object>> getPronunciationInformation(
-			@Valid @RequestBody String request, HttpServletRequest req, HttpServletResponse res){
+			@Valid @RequestBody GetPronunciationInformationRequest request, HttpServletRequest req, HttpServletResponse res){
+		LOG.info("PronunciationController::getPronunciationInformation::begin");
+		MultiValueMap<String, Object>  map = pronunciationDelegate.getPronunciationInformation(request);
+		LOG.info("PronunciationController::getPronunciationInformation::end");
+		return (ResponseEntity<MultiValueMap<String, Object>>) ResponseEntity.ok().contentType(MediaType.MULTIPART_FORM_DATA).body(map);
 		
-		return null;
 	}
 	
 	@RequestMapping(value = "/V1/savePronunciationInformation/V1", method = RequestMethod.POST, produces = { "application/json" }, consumes = { "application/json" } )
