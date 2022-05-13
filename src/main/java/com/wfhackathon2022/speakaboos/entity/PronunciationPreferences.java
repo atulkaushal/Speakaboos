@@ -25,36 +25,10 @@ public class PronunciationPreferences {
 	private Boolean optOutFlag;
 	
 	@Getter @Setter
-	@Column(name="preference")
-	private String preference;
+	@Column(name = "Locale")
+	private String locale;
 	
-	
-	public enum Preference {
-		STANDARD("standard"), CUSTOM("custom");
-		
-		private String value;
-		
-		Preference (String value) {
-			this.value = value;
-		}
-		
-		public static Preference parse(String preference) {
-			Preference pref = null;
-			for (Preference item : Preference.values()) {
-				if(item.value.equalsIgnoreCase(preference)) {
-					pref = item;
-					break;
-				}
-			}
-			return pref;
-		}
-	}
-	
-	public Preference getPreferece() {
-		return Preference.parse(this.preference);
-	}
-	
-	public void setPreference(Preference preference) {
-		this.preference = preference.value;
-	}
+	@Getter @Setter
+	@Column(name = "Speed")
+	private Integer speed;
 }

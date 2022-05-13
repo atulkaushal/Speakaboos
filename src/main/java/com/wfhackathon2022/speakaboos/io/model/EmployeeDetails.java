@@ -12,12 +12,15 @@ public class EmployeeDetails {
 	private Integer employeeId;
 	
 	@Getter @Setter
+	@JsonProperty("legalFirstName")
 	private String legalFirstName;
 	
 	@Getter @Setter
+	@JsonProperty("legalLastName")
 	private String legalLastName;
 	
 	@Getter @Setter
+	@JsonProperty("preferredName")
 	private String preferredName;
 	
 }

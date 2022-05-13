@@ -49,10 +49,11 @@ public class PronunciationDelegate {
 			if(!employees.isEmpty()) {
 			 employeeDetails = employees.stream()
 					.map(e -> {
-						EmployeeDetails empDetails = new EmployeeDetails();
-						empDetails.setEmployeeId(e.getEmployeeId());
-						empDetails.setLegalFirstName(e.getLegalFirstName());
-						empDetails.setLegalLastName(e.getLegalLastName());						
+					EmployeeDetails empDetails = new EmployeeDetails();
+					empDetails.setEmployeeId(e.getEmployeeId());
+					empDetails.setLegalFirstName(e.getLegalFirstName());
+					empDetails.setLegalLastName(e.getLegalLastName());
+					return empDetails;
 					}).collect(Collectors.toList());
 			response.setEmployeeDetailsList(employeeDetails);
 			}			
