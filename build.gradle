@@ -27,6 +27,13 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'javax.validation:validation-api:2.0.1.Final'
 	
+	compileOnly 'org.projectlombok:lombok:1.18.24'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	
+	testCompileOnly 'org.projectlombok:lombok:1.18.24'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+	
+	implementation("org.hibernate:hibernate-validator:7.0.4.Final")
 	
 }
 

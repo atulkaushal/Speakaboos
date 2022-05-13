@@ -5,29 +5,22 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(schema="dbo", name = "Employee")
-public class Employee {
-	
+@Table(schema="dbo", name = "PronunciationPreferences")
+@DynamicUpdate
+public class PronunciationPreferences {
+
 	@Id
 	@Getter @Setter
 	@Column(name = "EmployeeID", nullable=false)
 	private Integer employeeId;
 	
 	@Getter @Setter
-	@Column(name = "LegalFirstName")
-	private String legalFirstName;
-	
-	@Getter @Setter
-	@Column(name = "LegalLastName")
-	private String legalLastName;
-	
-	@Getter @Setter
-	@Column(name = "PreferredName")
-	private String preferredName;
-	
-
+	@Column(name = "OptOutFlag")
+	private Boolean optOutFlag;
 }
