@@ -100,9 +100,12 @@ public class PronunciationDelegate {
 					: pronunciationPreferences.getLocale() != null ? pronunciationPreferences.getLocale() : language;
 			speed = request.getSpeed() != null ? request.getSpeed()
 					: pronunciationPreferences.getSpeed() != null ? pronunciationPreferences.getSpeed() : speed;
+		} else {
+			language = request.getLanguage() != null ? request.getLanguage() : language;
+			speed = request.getSpeed() != null ? request.getSpeed() : speed;
 		}
-		byte[] audio = azureCognitiveServie.retrieveSpeech(request.getName(), request.getLanguage(),
-				request.getSpeed());
+		byte[] audio = azureCognitiveServie.retrieveSpeech(request.getName(), language,
+				speed);
 
 		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 
