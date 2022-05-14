@@ -1,5 +1,6 @@
 package com.wfhackathon2022.speakaboos.delegate;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,8 +9,10 @@ import java.util.stream.Collectors;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.wfhackathon2022.speakaboos.dao.PronunciationDAO;
 import com.wfhackathon2022.speakaboos.entity.Employee;
@@ -22,7 +25,7 @@ import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsResponse;
 import com.wfhackathon2022.speakaboos.io.model.GetPronunciationInformationRequest;
 import com.wfhackathon2022.speakaboos.io.model.GetPronunciationInformationResponse;
 import com.wfhackathon2022.speakaboos.io.model.ListEmployeesResponse;
-import com.wfhackathon2022.speakaboos.io.model.SaveEmployeePreferenceRequest;
+import com.wfhackathon2022.speakaboos.io.model.SavePronunciationInformationRequest;
 import com.wfhackathon2022.speakaboos.io.model.StatusMessageResponse;
 import com.wfhackathon2022.speakaboos.service.AzureCognitiveServie;
 
@@ -76,13 +79,35 @@ public class PronunciationDelegate {
 		return response;
 	}
 
-	public StatusMessageResponse savePronunciationInformation(SaveEmployeePreferenceRequest request) {
+	@Transactional
+	public StatusMessageResponse savePronunciationInformation(SavePronunciationInformationRequest request, MultipartFile nameAudio) {
 		LOG.info("PronunciationDelegate::savePronunciationInformation::begin");
-		PronunciationPreferences preference = new PronunciationPreferences();
-		preference.setEmployeeId(request.getEmployeeId());
-		preference.setLocale(request.getLocale());
+		PronunciationPreferences preference = null;
+		Optional<PronunciationPreferences> optionalPronunciationPreferences = pronunciationDAO
+				.getPronunciationPreferences(request.getEmployeeId());
+		
+		if(optionalPronunciationPreferences.isEmpty()) {
+			preference = new PronunciationPreferences();
+			preference.setEmployeeId(request.getEmployeeId());
+			
+		} else {
+			preference = optionalPronunciationPreferences.get();
+		}
 		preference.setOptOutFlag(request.getOptOutFlag());
-		preference.setSpeed(request.getSpeed());
+		if(request.getOptOutFlag()) {
+			preference.setLocale(null);
+			preference.setSpeed(null);
+			preference.setAudio(null);
+		} else {
+			preference.setLocale(request.getLocale());
+			preference.setSpeed(request.getSpeed());
+			try {
+				preference.setAudio(nameAudio.getBytes());
+			} catch (IOException e) {
+				LOG.error("ronunciationDelegate::savePronunciationInformation::exception: "+e.getMessage(), e);
+				throw new PronunciationException("Unable to extract file: "+e.getMessage(), "WFH9003", e);
+			}
+		}
 		pronunciationDAO.savePronunciationInformation(preference);
 		LOG.info("PronunciationDelegate::savePronunciationInformation::end");
 		return helper.createStatusMessageResponse("Employee preference saved successfully");

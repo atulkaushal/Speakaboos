@@ -14,13 +14,15 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.wfhackathon2022.speakaboos.delegate.PronunciationDelegate;
 import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsRequest;
 import com.wfhackathon2022.speakaboos.io.model.GetEmployeeDetailsResponse;
 import com.wfhackathon2022.speakaboos.io.model.GetPronunciationInformationRequest;
 import com.wfhackathon2022.speakaboos.io.model.ListEmployeesResponse;
-import com.wfhackathon2022.speakaboos.io.model.SaveEmployeePreferenceRequest;
+import com.wfhackathon2022.speakaboos.io.model.SavePronunciationInformationRequest;
 import com.wfhackathon2022.speakaboos.io.model.StatusMessageResponse;
 
 @Controller
@@ -41,11 +43,12 @@ public class PronunciationController {
 		
 	}
 	
-	@RequestMapping(value = "/V1/savePronunciationInformation/V1", method = RequestMethod.POST, produces = { "application/json" }, consumes = { "application/json" } )
+	@RequestMapping(value = "/V1/savePronunciationInformation/V1", method = RequestMethod.POST, produces = { "application/json" }, consumes = { "multipart/form-data" } )
 	public ResponseEntity<StatusMessageResponse> savePronunciationInformation(
-			@Valid @RequestBody SaveEmployeePreferenceRequest request, HttpServletRequest req, HttpServletResponse res){
+			@Valid @RequestPart("savePronunciationInformationRequest") SavePronunciationInformationRequest savePronunciationInformationRequest,
+			@Valid @RequestPart(value = "nameaudio.mp3", required = false) MultipartFile nameAudio){
 		LOG.info("PronunciationController::savePronunciationInformation::begin");
-		StatusMessageResponse response = pronunciationDelegate.savePronunciationInformation(request);
+		StatusMessageResponse response = pronunciationDelegate.savePronunciationInformation(savePronunciationInformationRequest, nameAudio);
 		LOG.info("PronunciationController::savePronunciationInformation::end");
 		return new ResponseEntity<StatusMessageResponse>(response, HttpStatus.OK);
 	}

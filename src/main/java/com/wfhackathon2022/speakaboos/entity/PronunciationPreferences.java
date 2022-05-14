@@ -1,8 +1,11 @@
 package com.wfhackathon2022.speakaboos.entity;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicUpdate;
@@ -31,4 +34,10 @@ public class PronunciationPreferences {
 	@Getter @Setter
 	@Column(name = "Speed")
 	private Integer speed;
+	
+	@Getter @Setter
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	@Column(name = "Audio")
+	private byte[] audio;
 }
