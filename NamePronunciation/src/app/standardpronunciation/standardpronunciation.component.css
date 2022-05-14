@@ -1,4 +1,79 @@
-.searchButton{
-    height:30px;
-    width:100px;
+.container {
+  margin: 10px;
+}
+.mat-card{
+align: center;
+}
+.mat-button{
+background-color : #463782;
+color : white;
+font-family : sans-serif;
+}
+.mat-select{
+background-color : white;
+color : black;
+font-family : sans-serif;
+}
+.label{
+font-weight :bold;
+font-size:16px;
+margin-top: 10px;
+margin-bottom: 10px;
+margin-bottom: 0rem;
+font-weight:bold;
+
+}
+
+input[type='text']{
+min-height:30px;
+max-width : 230px;
+border-radius:4px;
+background : #FFF;
+border: 1px solid #777777;
+letter-spacing : 0.25px;
+}
+
+.item {
+  border-radius: .2em;
+  color: black;
+  font-family: sans-serif;
+/*  font-size: 2em;*/
+  padding: 1em 1em;
+ /* text-transform: uppercase;*/
+}
+
+.item-1 {
+  background-color: #009169;
+}
+
+.item-2 {
+  background-color: #55b296;
+}
+
+.item-3 {
+  background-color: #9fd3c3;
+}
+
+.item-4 {
+  background-color: #e7b013;
+}
+
+.item-5 {
+  background-color: #073443;
+}
+
+
+/*$table-header: #1976D2;
+$table-header-border: #1565C0;
+$table-border: #d9d9d9;*/
+
+
+.flex-table {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 10%);
+    grid-template-rows: repeat(auto-fill, 100%);
+}
+.first {
+    grid-column-start: 1;
+    grid-column-end: 4;
 }
