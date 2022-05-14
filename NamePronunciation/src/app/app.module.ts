@@ -3,7 +3,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { StandardpronunciationComponent } from './standardpronunciation/standardpronunciation.component';
 import {MatButtonModule} from '@angular/material/button';
-import {FormGroupDirective,FormsModule} from '@angular/forms'
+import {MatSelectModule} from '@angular/material/select';
+import {MatIconModule} from '@angular/material/icon';
+import {MatSliderModule} from '@angular/material/slider';
+import {MatCardModule} from '@angular/material/card';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {FormGroupDirective,FormsModule,ReactiveFormsModule } from '@angular/forms'
+import {HttpClientModule} from '@angular/common/http';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -12,8 +19,16 @@ import {FormGroupDirective,FormsModule} from '@angular/forms'
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     MatButtonModule,
-    FormsModule
+    MatSelectModule,
+    MatIconModule,
+    MatSliderModule,
+    MatCardModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    FlexLayoutModule
 
   ],
   providers: [FormGroupDirective],

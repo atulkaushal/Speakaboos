@@ -1,8 +1,211 @@
-<p>StandardPronunciation works!</p>
 
 
-<div>
-  <label id="empId">Enter Employee Id</label>
-  <input type="text" formControlName="employeeIdInput">
-  <button mat-raised-button color="primary" >Search</button>
-</div>
+<mat-card >
+  <mat-card-title>Speak Easy!!</mat-card-title>
+  <mat-card-subtitle>Easy Pronunciation starts here...</mat-card-subtitle>
+  <mat-card-actions>
+    <button mat-button>LIKE</button>
+    <button mat-button>SHARE</button>
+  </mat-card-actions>
+</mat-card>
+
+<form [formGroup]="employeeForm">
+
+
+  <div class="container"
+       fxLayout
+       fxLayoutAlign="left"
+       fxLayoutGap="10px"
+       fxLayoutGap.xs="0"
+  >
+    <div class="item "
+         fxFlex="15%"
+    >
+      <label class="label" id="empId">Enter Employee Id:</label>
+    </div>
+    <div class="item "
+         fxFlex="20%" fxAlign="center"
+    >
+      <input type="text" formControlName="employeeIdInput"/>
+    </div>
+    <div class="item "
+         fxFlex="20%"
+
+    >
+      <button class="mat-button" mat-raised-button (click)="searchUser()"  [disabled]="!employeeForm.valid || employeeId ==0 ">Search</button>
+    </div>
+  </div>
+  <div class="container"
+       fxLayout
+       fxLayoutAlign="left"
+       fxLayoutGap="10px"
+       fxLayoutGap.xs="0"
+  >
+    <div class="item "
+         fxFlex="15%"
+    >
+      <label class="label" id="firstName">First Name:</label>
+    </div>
+    <div class="item "
+         fxFlex="20%" fxAlign="center"
+    >
+      <label >{{ employeeResponse.legalFirstName }}</label>
+    </div>
+
+
+
+      <div class="item "
+           fxFlex="15%"
+      >
+        <label class="label" id="lastName">Last Name:</label>
+      </div>
+      <div class="item "
+           fxFlex="20%" fxAlign="center"
+      >
+        <label >{{ employeeResponse.legalLastName }}</label>
+      </div>
+
+    </div>
+
+
+
+  <div class="container"
+       fxLayout
+       fxLayoutAlign="left"
+       fxLayoutGap="10px"
+       fxLayoutGap.xs="0"
+  >
+    <div class="item "
+         fxFlex="15%"
+    >
+      <label class="label" id="firstName"  >Preferred Name:</label>
+    </div>
+    <div class="item "
+         fxFlex="20%" fxAlign="center"
+    >
+      <label >{{ employeeResponse.preferredName }}</label>
+    </div>
+
+
+
+
+  </div>
+
+  <div class="container"
+       fxLayout
+       fxLayoutAlign="left"
+       fxLayoutGap="10px"
+       fxLayoutGap.xs="0"
+  >
+    <div class="item "
+         fxFlex="15%"
+    >
+      <label class="label" id="optOut"  >Opt Out:</label>
+    </div>
+    <div class="item "
+         fxFlex="20%" fxAlign="center"
+    >
+      <input  type="checkbox" name="optOutFlag" formControlName="optOutFlag" />OptOut
+    </div>
+
+
+
+
+  </div>
+  <div class="container"
+       fxLayout
+       fxLayoutAlign="left"
+       fxLayoutGap="10px"
+       fxLayoutGap.xs="0"
+  >
+    <div class="item "
+         fxFlex="15%"
+    >
+      <label class="label" id="country"  >Locale:</label>
+    </div>
+    <div class="item "
+         fxFlex="20%" fxAlign="center"
+    >
+
+    <!--  <mat-label>Select Locale</mat-label>-->
+      <mat-select  formControlName="locale" >
+        <mat-option>--</mat-option>
+        <mat-option>Select Locale</mat-option>
+        <mat-option *ngFor="let data of locale " [value]="data">{{data.locale}} {{data.language}} </mat-option>
+
+      </mat-select>
+
+
+    </div>
+
+
+
+
+  </div>
+
+
+  <div class="container"
+       fxLayout
+       fxLayoutAlign="left"
+       fxLayoutGap="10px"
+       fxLayoutGap.xs="0"
+  >
+    <div class="item "
+         fxFlex="15%"
+    >
+      <label class="label" id="speed"  >Speed:</label>
+    </div>
+    <div class="item "
+         fxFlex="20%" fxAlign="center"
+    >
+   <mat-slider min="1" max="3" step="1" value="1" formControlName="speed" ></mat-slider>
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
+  <div class="container"
+       fxLayout
+       fxLayoutAlign="left"
+       fxLayoutGap="10px"
+       fxLayoutGap.xs="0"
+  >
+    <div class="item "
+         fxFlex="15%"
+    >
+      <label class="label" id="firstName">Pronunciation:</label>
+    </div>
+    <div class="item "
+         fxFlex="20%" fxAlign="center"
+    >
+
+      <button mat-icon-button
+              >
+        <mat-icon >start</mat-icon>
+      </button>
+
+    </div>
+
+
+
+    <div class="item "
+         fxFlex="15%"
+    >
+      <label class="label" id="lastName">Phonetics:</label>
+    </div>
+    <div class="item "
+         fxFlex="20%" fxAlign="center"
+    >
+<!--  Add Phonetics-->
+    </div>
+    <button class="mat-button" mat-raised-button [disabled]="!employeeForm.valid || employeeId ==0 " (click)="savePreference()">Save</button>
+  </div>
+
+
+</form>
