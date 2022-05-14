@@ -13,7 +13,7 @@ import lombok.Setter;
 public class StatusMessage {
 
 	public enum TypeEnum {
-		INFOORMATION("INFORMATION"),
+		INFORMATION("INFORMATION"),
 		WARNING("WARNING"),
 		ERROR("ERROR");
 		

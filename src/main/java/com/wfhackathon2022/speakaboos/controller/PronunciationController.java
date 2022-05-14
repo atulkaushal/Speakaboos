@@ -59,7 +59,7 @@ public class PronunciationController {
 		return new ResponseEntity<GetEmployeeDetailsResponse>(response, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/V1/listEmployees/V1", method = RequestMethod.POST, produces = { "application/json" }, consumes = { "application/json" } )
+	@RequestMapping(value = "/V1/listEmployees/V1", method = RequestMethod.POST, produces = { "application/json" } )
 	public ResponseEntity<ListEmployeesResponse> listEmployees(){
 		LOG.info("PronunciationController::listEmployees::begin");
 		ListEmployeesResponse response =  pronunciationDelegate.listEmployees();
