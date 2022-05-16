@@ -63,8 +63,10 @@ public class PronunciationDelegate {
 		ListEmployeesResponse response = new ListEmployeesResponse();
 		List<Employee> employees = pronunciationDAO.getEmployeeList();
 		List<EmployeeDetails> employeeDetails = new ArrayList<EmployeeDetails>();
-		if(!employees.isEmpty()) {
-		 employeeDetails = employees.stream()
+		if (employees.isEmpty()) {
+			throw new PronunciationException("No employee found in listEmployees", "WFH9001");
+		}		
+		employeeDetails = employees.stream()
 				.map(e -> {
 				EmployeeDetails empDetails = new EmployeeDetails();
 				empDetails.setEmployeeId(e.getEmployeeId());
@@ -73,7 +75,6 @@ public class PronunciationDelegate {
 				return empDetails;
 				}).collect(Collectors.toList());
 		response.setEmployeeDetailsList(employeeDetails);
-		}			
 		LOG.info("PronunciationDelegate::listEmployees::end");
 		return response;
 	}
