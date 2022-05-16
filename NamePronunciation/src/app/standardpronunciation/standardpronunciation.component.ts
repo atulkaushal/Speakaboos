@@ -32,7 +32,7 @@ preferenceRequest : EmployeePreferenceDetailRequest = new EmployeePreferenceDeta
 pronunciationRequest : EmployeePronunciationDetailRequest = new EmployeePronunciationDetailRequest();
 pronunciationResponse : EmployeePronunciationDetailResponse = new EmployeePronunciationDetailResponse();
 
-
+//file: File? = undefined;
 
 
 
@@ -114,7 +114,7 @@ this.employeeForm.controls['speed'].setValue(response.speed.toString());
 });
 }
 
-savePreference():void{
+savePreference():void {
 
 
 
@@ -166,6 +166,13 @@ this.employeeForm.controls['employeeIdInput'].setValue(0);
 this.employeeForm.controls['locale'].setValue('');
 this.employeeForm.controls['speed'].setValue("1");
 
+/* this.employeeService.saveAudio(this.pronunciationRequest).subscribe ((response:any)=>{
+
+  console.log("Saved file");
+}); */
+
+
+
 
 }
 
@@ -178,5 +185,24 @@ this.employeeService.getAudio(this.pronunciationRequest).subscribe ((response:an
   audio.play();
 });
 }
+
+
+onFilechange(event: any) {
+   console.log(event.target.files[0]);
+  let file :File = event.target.files[0];
+   if (file) {
+       this.employeeService.saveAudio(file,this.employeeForm.controls['employeeIdInput'].value).subscribe ((response:any)=>{
+          alert("Uploaded")
+        })
+      } else {
+        alert("Please select a file first")
+      }
+
+}
+
+
+
+
+
 
 }

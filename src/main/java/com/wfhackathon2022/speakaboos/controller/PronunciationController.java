@@ -66,10 +66,10 @@ public class PronunciationController {
 	
 	@RequestMapping(value = "/V1/savePronunciationInformation/V1", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE } )
 	public ResponseEntity<StatusMessageResponse> savePronunciationAudio(
-			@RequestHeader(value = "EmployeeId", required = true) Integer employeeId,
+			@RequestHeader(value = "EmployeeId", required = true) String employeeId,
 			@RequestParam("file") MultipartFile nameAudio){
 		LOG.info("PronunciationController::savePronunciationAudio::begin");
-		StatusMessageResponse response = pronunciationDelegate.savePronunciationAudio(employeeId, nameAudio);
+		StatusMessageResponse response = pronunciationDelegate.savePronunciationAudio(Integer.parseInt(employeeId), nameAudio);
 		LOG.info("PronunciationController::savePronunciationAudio::end");
 		return new ResponseEntity<StatusMessageResponse>(response, HttpStatus.OK);
 	}

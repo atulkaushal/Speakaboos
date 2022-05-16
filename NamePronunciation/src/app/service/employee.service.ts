@@ -42,6 +42,20 @@ getAudio(request: EmployeePronunciationDetailRequest) : Observable <any>
 
         }
 
+        saveAudio(file: File, employeeId : number) : Observable <any>
+                {
+//const file:File = "C:\\Users\\13142\\Downloads\\sample-3s.mp3";
+
+const formData = new FormData();
+formData.append('file',file);
+        	        	let headers = new HttpHeaders({
+
+        	         'EmployeeId':'4'});
+
+        		         return this.httpClient.post<any>(this.baseURL+'/savePronunciationInformation/V1',formData,{headers: headers});
+
+                }
+
 
     getEmployeePronunciation(request: EmployeePronunciationDetailRequest) : Observable <any>
         {
