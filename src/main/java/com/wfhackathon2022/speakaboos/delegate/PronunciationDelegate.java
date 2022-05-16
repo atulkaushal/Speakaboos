@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.wfhackathon2022.speakaboos.dao.PronunciationDAO;
@@ -113,8 +111,33 @@ public class PronunciationDelegate {
 		return helper.createStatusMessageResponse("Employee preference saved successfully");
 	}
 
-	public MultiValueMap<String, Object> getPronunciationInformation(GetPronunciationInformationRequest request) {
+	public GetPronunciationInformationResponse getPronunciationInformation(GetPronunciationInformationRequest request) {
 		LOG.info("PronunciationDelegate::getPronunciationInformation::begin");
+		Optional<PronunciationPreferences> optionalPronunciationPreferences = pronunciationDAO
+				.getPronunciationPreferences(request.getEmployeeId());
+		String language = "en-US";
+		Integer speed = Integer.valueOf(1);
+		if (optionalPronunciationPreferences.isPresent()) {
+			PronunciationPreferences pronunciationPreferences = optionalPronunciationPreferences.get();
+			language = request.getLanguage() != null ? request.getLanguage()
+					: pronunciationPreferences.getLocale() != null ? pronunciationPreferences.getLocale() : language;
+			speed = request.getSpeed() != null ? request.getSpeed()
+					: pronunciationPreferences.getSpeed() != null ? pronunciationPreferences.getSpeed() : speed;
+		} else {
+			language = request.getLanguage() != null ? request.getLanguage() : language;
+			speed = request.getSpeed() != null ? request.getSpeed() : speed;
+		}
+
+		GetPronunciationInformationResponse response = new GetPronunciationInformationResponse();
+		response.setLanguage(language);
+		response.setSpeed(speed);
+
+		LOG.info("PronunciationDelegate::getPronunciationInformation::end");
+		return response;
+	}
+	
+	public byte[] getPronunciationAudio(GetPronunciationInformationRequest request) {
+		LOG.info("PronunciationDelegate::getPronunciationAudio::begin");
 		Optional<PronunciationPreferences> optionalPronunciationPreferences = pronunciationDAO
 				.getPronunciationPreferences(request.getEmployeeId());
 		String language = "en-US";
@@ -131,18 +154,7 @@ public class PronunciationDelegate {
 		}
 		byte[] audio = azureCognitiveServie.retrieveSpeech(request.getName(), language,
 				speed);
-
-		MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-
-		map.add("nameaudio.mp3", audio);
-
-		GetPronunciationInformationResponse response = new GetPronunciationInformationResponse();
-		response.setLanguage(language);
-		response.setSpeed(speed);
-
-		map.add("preferences", response);
-
-		LOG.info("PronunciationDelegate::getPronunciationInformation::end");
-		return map;
+		LOG.info("PronunciationDelegate::getPronunciationAudio::end");
+		return audio;
 	}
 }
