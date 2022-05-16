@@ -1,10 +1,9 @@
 package com.wfhackathon2022.speakaboos.delegate;
 
-import static org.hamcrest.CoreMatchers.any;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +29,6 @@ import com.wfhackathon2022.speakaboos.io.model.GetPronunciationInformationReques
 import com.wfhackathon2022.speakaboos.io.model.GetPronunciationInformationResponse;
 import com.wfhackathon2022.speakaboos.io.model.ListEmployeesResponse;
 import com.wfhackathon2022.speakaboos.io.model.SavePronunciationInformationRequest;
-import com.wfhackathon2022.speakaboos.io.model.StatusMessage;
 import com.wfhackathon2022.speakaboos.io.model.StatusMessageResponse;
 import com.wfhackathon2022.speakaboos.service.AzureCognitiveServie;
 
@@ -178,17 +176,42 @@ public class PronunciationDelegateTest {
 		assertEquals(expectedAudio.length, actualResponse.length);
 	}
 	
-	//@Test
+	@Test
 	public void testSavePronunciationAudio() {
-		//GetPronunciationInformationRequest request = this.helper.createGetPronunciationInformationRequest();
+		PronunciationPreferences pronunciationPreferences = this.helper.createPronunciationPreferences();
+		pronunciationPreferences.setOptOutFlag(false);
+		Optional<PronunciationPreferences> optionalPronunciationPreferences = Optional.of(pronunciationPreferences);
+		Mockito.when(pronunciationDAO.getPronunciationPreferences(Mockito.any())).thenReturn(optionalPronunciationPreferences);
+		Mockito.doNothing().when(pronunciationDAO).savePronunciationInformation(Mockito.any());
+		StatusMessageResponse expectedResponse = this.helper.createStatusMessageResponse("Audio saved successfully");		
+		Mockito.when(commonHelper.createStatusMessageResponse(Mockito.anyString())).thenReturn(expectedResponse);
+		StatusMessageResponse actualResponse = pronunciationDelegate.savePronunciationAudio(1, nameAudio);
+		assertEquals("Audio saved successfully", actualResponse.getStatusMessages().get(0).getMessage());
+	}
+	
+	@Test(expected=PronunciationException.class)
+	public void testSavePronunciationAudioWithOptOut() {
 		PronunciationPreferences pronunciationPreferences = this.helper.createPronunciationPreferences();
 		Optional<PronunciationPreferences> optionalPronunciationPreferences = Optional.of(pronunciationPreferences);
 		Mockito.when(pronunciationDAO.getPronunciationPreferences(Mockito.any())).thenReturn(optionalPronunciationPreferences);
 		Mockito.doNothing().when(pronunciationDAO).savePronunciationInformation(Mockito.any());
 		StatusMessageResponse expectedResponse = this.helper.createStatusMessageResponse("Audio saved successfully");		
-		StatusMessageResponse actualResponse = pronunciationDelegate.savePronunciationAudio(1, nameAudio);
 		Mockito.when(commonHelper.createStatusMessageResponse(Mockito.anyString())).thenReturn(expectedResponse);
-		assertEquals("Audio saved successfully", actualResponse.getStatusMessages().get(0).getMessage());
+		pronunciationDelegate.savePronunciationAudio(1, nameAudio);
+	}
+	
+	@Test(expected=PronunciationException.class)
+	public void testSavePronunciationAudioWithIOException() throws IOException {
+		PronunciationPreferences pronunciationPreferences = this.helper.createPronunciationPreferences();
+		pronunciationPreferences.setOptOutFlag(false);
+		Optional<PronunciationPreferences> optionalPronunciationPreferences = Optional.of(pronunciationPreferences);
+		Mockito.when(pronunciationDAO.getPronunciationPreferences(Mockito.any())).thenReturn(optionalPronunciationPreferences);
+		Mockito.doNothing().when(pronunciationDAO).savePronunciationInformation(Mockito.any());
+		StatusMessageResponse expectedResponse = this.helper.createStatusMessageResponse("Audio saved successfully");		
+		Mockito.when(commonHelper.createStatusMessageResponse(Mockito.anyString())).thenReturn(expectedResponse);
+		MultipartFile file = Mockito.spy(nameAudio);
+		Mockito.when(file.getBytes()).thenThrow(new IOException());
+		pronunciationDelegate.savePronunciationAudio(1, file);		
 	}
 
 }
