@@ -184,11 +184,22 @@
     <div class="item "
          fxFlex="20%" fxAlign="center"
     >
-
-      <button mat-icon-button (click)="playPronunciation()"
-              >
-        <mat-icon >start</mat-icon>
+    
+      <button mat-icon-button (click)="playPronunciation()">
+        <mat-icon >play_arrow</mat-icon>
       </button>
+
+      <button mat-icon-button (click)="initiateRecording()" *ngIf="!recording" style="cursor: pointer">
+        <mat-icon >fiber_manual_record</mat-icon>
+      </button>
+      
+      <button mat-icon-button (click)="stopRecording()"  *ngIf="recording" style="cursor: pointer">
+        <mat-icon >stop</mat-icon>
+      </button>
+      
+      <audio controls="" *ngIf="url" >
+		<source [src]="sanitize(url)" type="audio/wav">
+	</audio>
 
     </div>
 
@@ -206,6 +217,6 @@
     </div>
     <button class="mat-button" mat-raised-button [disabled]="!employeeForm.valid || employeeId ==0 " (click)="savePreference()">Save</button>
   </div>
-
+ <input (change)="this.onFilechange($event)" class="form-control" type="file" id="formFile">
 
 </form>

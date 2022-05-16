@@ -1,3 +1,4 @@
+//import {Recorder} from 'recorder-js';
 import { Component, OnInit } from '@angular/core';
 import {FormControl,FormGroup,Validators,ReactiveFormsModule } from '@angular/forms'
 import {EmployeeDetailRequest} from "../model/employee-details-request.model";
@@ -12,6 +13,13 @@ import {EmployeeService} from "../service/employee.service";
 import {HttpClient,HttpResponse} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
 
+
+
+declare var $: any;
+import * as RecordRTC from 'recordrtc';
+import { DomSanitizer } from '@angular/platform-browser';
+
+
 @Component({
   selector: 'app-standardpronunciation',
   templateUrl: './standardpronunciation.component.html',
@@ -22,6 +30,14 @@ import {ToastrService} from 'ngx-toastr';
 export class StandardpronunciationComponent implements OnInit {
 locale : any [] =Constants.localeData;
 integerPattern : string = '\\d+$';
+
+//Lets declare Record OBJ
+record :any;
+//Will use this flag for toggeling recording
+recording = false;
+//URL of Blob
+url: string = '';
+error= '';
 
 employeeId : number = 0;
 request :EmployeeDetailRequest =new EmployeeDetailRequest();
@@ -36,7 +52,7 @@ pronunciationResponse : EmployeePronunciationDetailResponse = new EmployeePronun
 
 
 
-  constructor( private employeeService:EmployeeService,private toastr : ToastrService) {
+  constructor( private employeeService:EmployeeService,private toastr : ToastrService,private domSanitizer: DomSanitizer) {
 
   }
 optOutFlag=false;
@@ -143,7 +159,6 @@ if(speed!='undefined' && speed)
 this.preferenceRequest.speed =speed ;
 }
 
-
 this.employeeService.saveEmployeePreference(this.preferenceRequest).subscribe ((response:StatusMessageResponse)=>{
 
 
@@ -174,9 +189,79 @@ this.pronunciationRequest.employeeId = this.employeeForm.controls['employeeIdInp
 this.employeeService.getAudio(this.pronunciationRequest).subscribe ((response:any)=>{
 
   let audio=new Audio(URL.createObjectURL(new Blob([response], {type: "audio/mp3"})));
-
+  audio.load();
   audio.play();
 });
 }
 
+onFilechange(event: any) {
+   console.log(event.target.files[0]);
+  let file :File = event.target.files[0];
+   if (file) {
+       this.employeeService.saveAudio(file,this.employeeForm.controls['employeeIdInput'].value).subscribe ((response:any)=>{
+          alert("Uploaded")
+        })
+      } else {
+        alert("Please select a file first")
+      }
+
+}
+
+
+ sanitize(url: string) {
+    return this.domSanitizer.bypassSecurityTrustUrl(url);
+  }
+
+/**
+* Start recording.
+*/
+initiateRecording() {
+this.recording = true;
+let mediaConstraints = {
+video: false,
+audio: true
+};
+this.url='';
+navigator.mediaDevices.getUserMedia(mediaConstraints).then(this.successCallback.bind(this), this.errorCallback.bind(this));
+}
+
+/**
+* Will be called automatically.
+*/
+successCallback(stream: any) {
+var options = {
+mimeType: "audio/wav",
+numberOfAudioChannels: 1,
+sampleRate: 48000,
+};
+//Start Actuall Recording
+var StereoAudioRecorder = RecordRTC.StereoAudioRecorder;
+this.record = new StereoAudioRecorder(stream, options);
+this.record.record();
+}
+
+/**
+* Process Error.
+*/
+errorCallback(error:any) {
+this.error = 'Can not play audio in your browser';
+}
+
+
+/**
+* Stop recording.
+*/
+stopRecording() {
+this.recording = false;
+this.record.stop(this.processRecording.bind(this));
+}
+/**
+* processRecording Do what ever you want with blob
+* @param  {any} blob Blog
+*/
+processRecording(blob: Blob) {
+this.url = URL.createObjectURL(blob);
+console.log("blob", blob);
+console.log("url", this.url);
+}
 }

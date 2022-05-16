@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "NamePronunciation": {
+    "speakaboo-ui": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/speakaboos-ui",
+            "outputPath": "dist/speakaboo-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "speakaboos-ui:build:production"
+              "browserTarget": "speakaboo-ui:build:production"
             },
             "development": {
-              "browserTarget": "speakaboos-ui:build:development"
+              "browserTarget": "speakaboo-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "speakaboos-ui:build"
+            "browserTarget": "speakaboo-ui:build"
           }
         },
         "test": {
@@ -103,5 +103,5 @@
       }
     }
   },
-  "defaultProject": "speakaboos-ui"
+  "defaultProject": "speakaboo-ui"
 }
