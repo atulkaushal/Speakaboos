@@ -1,45 +1,4 @@
-plugins {
-	id 'org.springframework.boot' version '2.6.7'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
-	id 'war'
-}
-
-group = 'com.wfhackathon2022'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
-
-repositories {
-	mavenCentral()
-	maven{
-	url 'https://csspeechstorage.blob.core.windows.net/maven'
-	}
-}
-
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-	implementation group: 'com.microsoft.cognitiveservices.speech', name: 'client-sdk', version: "1.21.0", ext: "jar"
-
-	compileOnly("javax.validation:validation-api:2.0.1.Final")
-
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'javax.validation:validation-api:2.0.1.Final'
-	
-	compileOnly 'org.projectlombok:lombok:1.18.24'
-	annotationProcessor 'org.projectlombok:lombok:1.18.24'
-	
-	testCompileOnly 'org.projectlombok:lombok:1.18.24'
-	testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
-	testImplementation("junit:junit:4.13.2")
-	
-	implementation("org.hibernate:hibernate-validator:7.0.4.Final")
-	implementation("com.microsoft.sqlserver:mssql-jdbc:10.2.0.jre11")
-	
-	
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
+allprojects {
+	group = 'com.wfhackathon2022'
+	version = '0.0.1-SNAPSHOT'
 }

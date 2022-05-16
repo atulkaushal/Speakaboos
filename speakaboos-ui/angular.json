@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/name-pronunciation",
+            "outputPath": "dist/speakaboos-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "NamePronunciation:build:production"
+              "browserTarget": "speakaboos-ui:build:production"
             },
             "development": {
-              "browserTarget": "NamePronunciation:build:development"
+              "browserTarget": "speakaboos-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "NamePronunciation:build"
+            "browserTarget": "speakaboos-ui:build"
           }
         },
         "test": {
@@ -103,5 +103,5 @@
       }
     }
   },
-  "defaultProject": "NamePronunciation"
+  "defaultProject": "speakaboos-ui"
 }

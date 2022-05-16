@@ -1,1 +1,4 @@
 rootProject.name = 'Speakaboos'
+
+include 'speakaboos-api'
+include 'speakaboos-ui'
