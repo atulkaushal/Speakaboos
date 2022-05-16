@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ import com.wfhackathon2022.speakaboos.io.model.SavePronunciationInformationReque
 import com.wfhackathon2022.speakaboos.io.model.StatusMessageResponse;
 
 @Controller
+@CrossOrigin
 public class PronunciationController {
 	
 	private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(PronunciationController.class);

@@ -7,6 +7,7 @@ import {EmployeePronunciationDetailRequest} from "../model/employee-pronunciatio
 import {StatusMessageResponse} from "../model/employee-preferencedetails-response.model";
 import {Constants} from "../const/app-constants";
 import {EmployeeService} from "../service/employee.service";
+import {HttpClient,HttpResponse} from '@angular/common/http';
 @Component({
   selector: 'app-standardpronunciation',
   templateUrl: './standardpronunciation.component.html',
@@ -136,6 +137,17 @@ console.log("savePreference"+this.preferenceRequest.speed);
 this.employeeService.saveEmployeePreference(this.preferenceRequest).subscribe ((response:StatusMessageResponse)=>{
 
 console.log("Save success");
+});
+}
+
+
+playPronunciation():void{
+this.pronunciationRequest.employeeId = this.employeeForm.controls['employeeIdInput'].value;
+this.employeeService.getEmployeePronunciation(this.pronunciationRequest).subscribe ((response:any)=>{
+//console.log(response);
+  let audio=new Audio(URL.createObjectURL(new Blob([response], {type: "audio/mp3"})));
+  //audio.load();
+  audio.play();
 });
 }
 

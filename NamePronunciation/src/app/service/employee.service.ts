@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient,HttpResponse} from '@angular/common/http';
+import {HttpClient,HttpHeaders,HttpResponse} from '@angular/common/http';
 import {EmployeeDetailRequest} from "../model/employee-details-request.model";
 import {EmployeeDetailResponse} from "../model/employee-details-response.model";
 import {EmployeePreferenceDetailRequest} from "../model/employee-preferencedetails-request.model";
@@ -36,8 +36,10 @@ baseURL : string ='http://localhost:8080/pronunciation/V1'
         {
          console.log("getEmployeePronunciation called");
         //return new Observable<any()>();
-          return this.httpClient.post<any>(this.baseURL+'/getPronunciationInformation/V1',request);
-
+	        	let headers = new HttpHeaders({
+	        'Accept':'application/octet-stream' });
+         
+		         return this.httpClient.post<any>(this.baseURL+'/getPronunciationInformation/V1',request,{headers: headers,responseType: 'blob' as 'json'});
         //return new Observable<StatusMessageResponse>();
         }
 }
