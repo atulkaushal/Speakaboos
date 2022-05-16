@@ -1,6 +1,11 @@
 package com.wfhackathon2022.speakaboos.io.model;
 
-import org.hibernate.validator.constraints.Range;
+import java.math.BigDecimal;
+
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+
 import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,8 +23,10 @@ public class GetPronunciationInformationResponse {
 	private String language;
 	
 	@Getter @Setter
-	@Range(min = 1, max = 3)
+    @DecimalMin(value = "1.0", inclusive = true)
+	@DecimalMax(value = "3.0", inclusive = true)
+    @Digits(integer=1, fraction=1)
 	@JsonProperty("speed")	
-	private Integer speed;
+	private BigDecimal speed;
 	
 }

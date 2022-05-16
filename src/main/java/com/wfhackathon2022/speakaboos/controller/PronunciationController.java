@@ -1,7 +1,5 @@
 package com.wfhackathon2022.speakaboos.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.slf4j.LoggerFactory;
@@ -12,9 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.wfhackathon2022.speakaboos.delegate.PronunciationDelegate;
@@ -34,9 +33,9 @@ public class PronunciationController {
 	@Autowired
 	private PronunciationDelegate pronunciationDelegate;
 	
-	@RequestMapping(value = "/V1/getPronunciationInformation/V1", method = RequestMethod.POST, produces = { "application/json" }, consumes = { "application/json" } )
+	@RequestMapping(value = "/V1/getPronunciationInformation/V1", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE } )
 	public ResponseEntity<GetPronunciationInformationResponse> getPronunciationInformation(
-			@Valid @RequestBody GetPronunciationInformationRequest request, HttpServletRequest req, HttpServletResponse res){
+			@Valid @RequestBody GetPronunciationInformationRequest request){
 		LOG.info("PronunciationController::getPronunciationInformation::begin");
 		GetPronunciationInformationResponse response = pronunciationDelegate.getPronunciationInformation(request);
 		LOG.info("PronunciationController::getPronunciationInformation::end");
@@ -44,9 +43,9 @@ public class PronunciationController {
 		
 	}
 	
-	@RequestMapping(value = "/V1/getPronunciationInformation/V1", method = RequestMethod.POST, produces = { MediaType.APPLICATION_OCTET_STREAM_VALUE }, consumes = { "application/json" } )
+	@RequestMapping(value = "/V1/getPronunciationInformation/V1", method = RequestMethod.POST, produces = { MediaType.APPLICATION_OCTET_STREAM_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE } )
 	public ResponseEntity<ByteArrayResource> getPronunciationAudio(
-			@Valid @RequestBody GetPronunciationInformationRequest request, HttpServletRequest req, HttpServletResponse res){
+			@Valid @RequestBody GetPronunciationInformationRequest request){
 		LOG.info("PronunciationController::getPronunciationAudio::begin");
 		byte[] audio = pronunciationDelegate.getPronunciationAudio(request);
 		LOG.info("PronunciationController::getPronunciationAudio::end");
@@ -54,17 +53,26 @@ public class PronunciationController {
 		
 	}
 	
-	@RequestMapping(value = "/V1/savePronunciationInformation/V1", method = RequestMethod.POST, produces = { "application/json" }, consumes = { "multipart/form-data" } )
+	@RequestMapping(value = "/V1/savePronunciationInformation/V1", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE } )
 	public ResponseEntity<StatusMessageResponse> savePronunciationInformation(
-			@Valid @RequestPart("savePronunciationInformationRequest") SavePronunciationInformationRequest savePronunciationInformationRequest,
-			@Valid @RequestPart(value = "nameaudio.mp3", required = false) MultipartFile nameAudio){
+			@Valid @RequestBody SavePronunciationInformationRequest savePronunciationInformationRequest){
 		LOG.info("PronunciationController::savePronunciationInformation::begin");
-		StatusMessageResponse response = pronunciationDelegate.savePronunciationInformation(savePronunciationInformationRequest, nameAudio);
+		StatusMessageResponse response = pronunciationDelegate.savePronunciationInformation(savePronunciationInformationRequest);
 		LOG.info("PronunciationController::savePronunciationInformation::end");
 		return new ResponseEntity<StatusMessageResponse>(response, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/V1/getEmployeeDetails/V1", method = RequestMethod.POST, produces = { "application/json" }, consumes = { "application/json" } )
+	@RequestMapping(value = "/V1/savePronunciationInformation/V1", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE } )
+	public ResponseEntity<StatusMessageResponse> savePronunciationAudio(
+			@RequestHeader(value = "EmployeeId", required = true) Integer employeeId,
+			@RequestParam("file") MultipartFile nameAudio){
+		LOG.info("PronunciationController::savePronunciationAudio::begin");
+		StatusMessageResponse response = pronunciationDelegate.savePronunciationAudio(employeeId, nameAudio);
+		LOG.info("PronunciationController::savePronunciationAudio::end");
+		return new ResponseEntity<StatusMessageResponse>(response, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/V1/getEmployeeDetails/V1", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE }, consumes = { MediaType.APPLICATION_JSON_VALUE } )
 	public ResponseEntity<GetEmployeeDetailsResponse> getEmployeeDetails(
 			@Valid @RequestBody GetEmployeeDetailsRequest request){
 		LOG.info("PronunciationController::getEmployeeDetails::begin");
@@ -73,7 +81,7 @@ public class PronunciationController {
 		return new ResponseEntity<GetEmployeeDetailsResponse>(response, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/V1/listEmployees/V1", method = RequestMethod.POST, produces = { "application/json" } )
+	@RequestMapping(value = "/V1/listEmployees/V1", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE } )
 	public ResponseEntity<ListEmployeesResponse> listEmployees(){
 		LOG.info("PronunciationController::listEmployees::begin");
 		ListEmployeesResponse response =  pronunciationDelegate.listEmployees();

@@ -1,6 +1,7 @@
 package com.wfhackathon2022.speakaboos.delegate;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -78,7 +79,7 @@ public class PronunciationDelegate {
 	}
 
 	@Transactional
-	public StatusMessageResponse savePronunciationInformation(SavePronunciationInformationRequest request, MultipartFile nameAudio) {
+	public StatusMessageResponse savePronunciationInformation(SavePronunciationInformationRequest request) {
 		LOG.info("PronunciationDelegate::savePronunciationInformation::begin");
 		PronunciationPreferences preference = null;
 		Optional<PronunciationPreferences> optionalPronunciationPreferences = pronunciationDAO
@@ -91,24 +92,42 @@ public class PronunciationDelegate {
 		} else {
 			preference = optionalPronunciationPreferences.get();
 		}
-		preference.setOptOutFlag(request.getOptOutFlag());
-		if(request.getOptOutFlag()) {
+		preference.setOptOutFlag(request.isOptOutFlag());
+		if(request.isOptOutFlag()) {
 			preference.setLocale(null);
 			preference.setSpeed(null);
 			preference.setAudio(null);
 		} else {
 			preference.setLocale(request.getLocale());
 			preference.setSpeed(request.getSpeed());
-			try {
-				preference.setAudio(nameAudio.getBytes());
-			} catch (IOException e) {
-				LOG.error("ronunciationDelegate::savePronunciationInformation::exception: "+e.getMessage(), e);
-				throw new PronunciationException("Unable to extract file: "+e.getMessage(), "WFH9003", e);
-			}
 		}
 		pronunciationDAO.savePronunciationInformation(preference);
 		LOG.info("PronunciationDelegate::savePronunciationInformation::end");
 		return helper.createStatusMessageResponse("Employee preference saved successfully");
+	}
+	
+	@Transactional
+	public StatusMessageResponse savePronunciationAudio(Integer employeeId, MultipartFile nameAudio) {
+		LOG.info("PronunciationDelegate::savePronunciationAudio::begin");
+		PronunciationPreferences preference = null;
+		Optional<PronunciationPreferences> optionalPronunciationPreferences = pronunciationDAO
+				.getPronunciationPreferences(employeeId);
+		
+		if(optionalPronunciationPreferences.isEmpty()) {
+			throw new PronunciationException("Employee preferences not found for "+employeeId, "WFH9004");
+			
+		} else {
+			preference = optionalPronunciationPreferences.get();
+		}
+		try {
+			preference.setAudio(nameAudio.getBytes());
+		} catch (IOException e) {
+			LOG.error("PronunciationDelegate::savePronunciationAudio::exception: "+e.getMessage(), e);
+			throw new PronunciationException("Unable to extract file: "+e.getMessage(), "WFH9003", e);
+		}
+		pronunciationDAO.savePronunciationInformation(preference);
+		LOG.info("PronunciationDelegate::savePronunciationAudio::end");
+		return helper.createStatusMessageResponse("Audio saved successfully");
 	}
 
 	public GetPronunciationInformationResponse getPronunciationInformation(GetPronunciationInformationRequest request) {
@@ -116,7 +135,7 @@ public class PronunciationDelegate {
 		Optional<PronunciationPreferences> optionalPronunciationPreferences = pronunciationDAO
 				.getPronunciationPreferences(request.getEmployeeId());
 		String language = "en-US";
-		Integer speed = Integer.valueOf(1);
+		BigDecimal speed = BigDecimal.valueOf(1);
 		if (optionalPronunciationPreferences.isPresent()) {
 			PronunciationPreferences pronunciationPreferences = optionalPronunciationPreferences.get();
 			language = request.getLanguage() != null ? request.getLanguage()
@@ -141,7 +160,7 @@ public class PronunciationDelegate {
 		Optional<PronunciationPreferences> optionalPronunciationPreferences = pronunciationDAO
 				.getPronunciationPreferences(request.getEmployeeId());
 		String language = "en-US";
-		Integer speed = Integer.valueOf(1);
+		BigDecimal speed = BigDecimal.valueOf(1);
 		if (optionalPronunciationPreferences.isPresent()) {
 			PronunciationPreferences pronunciationPreferences = optionalPronunciationPreferences.get();
 			language = request.getLanguage() != null ? request.getLanguage()

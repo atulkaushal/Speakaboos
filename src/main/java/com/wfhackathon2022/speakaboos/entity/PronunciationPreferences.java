@@ -1,5 +1,7 @@
 package com.wfhackathon2022.speakaboos.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,7 +35,7 @@ public class PronunciationPreferences {
 	
 	@Getter @Setter
 	@Column(name = "Speed")
-	private Integer speed;
+	private BigDecimal speed;
 	
 	@Getter @Setter
 	@Lob

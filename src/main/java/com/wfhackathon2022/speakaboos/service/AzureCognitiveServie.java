@@ -1,6 +1,7 @@
 package com.wfhackathon2022.speakaboos.service;
 
 
+import java.math.BigDecimal;
 import java.util.concurrent.Future;
 
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class AzureCognitiveServie {
     String serviceRegion = "eastus";
     
     
-	public byte[] retrieveSpeech(String text, String language, Integer speed) {
+	public byte[] retrieveSpeech(String text, String language, BigDecimal speed) {
 		byte[] audio = null;        
         SpeechConfig config = null;
         SpeechSynthesizer synth = null;

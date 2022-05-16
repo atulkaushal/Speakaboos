@@ -1,5 +1,7 @@
 package com.wfhackathon2022.speakaboos.io.model;
 
+import java.math.BigDecimal;
+
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Range;
@@ -33,5 +35,5 @@ public class GetPronunciationInformationRequest {
 	@Getter @Setter
 	@Range(min = 1, max = 3)
 	@JsonProperty("speed")	
-	private Integer speed;
+	private BigDecimal speed;
 }
