@@ -19,27 +19,36 @@ baseURL : string ='http://localhost:8080/pronunciation/V1'
 
   getEmployeeDetails(request: EmployeeDetailRequest) : Observable <EmployeeDetailResponse>
   {
-  //return new Observable<EmployeeDetailResponse>();
+
     return this.httpClient.post<any>(this.baseURL+'/getEmployeeDetails/V1',request);
   }
 
 
    saveEmployeePreference(request: EmployeePreferenceDetailRequest) : Observable <StatusMessageResponse>
     {
-    //return new Observable<any()>();
+
       return this.httpClient.post<any>(this.baseURL+'/savePronunciationInformation/V1',request);
-      // console.log("save called");
-    //return new Observable<StatusMessageResponse>();
+
     }
+
+
+getAudio(request: EmployeePronunciationDetailRequest) : Observable <any>
+        {
+
+	        	let headers = new HttpHeaders({
+	        'Accept':'application/octet-stream' });
+
+		         return this.httpClient.post<any>(this.baseURL+'/getPronunciationInformation/V1',request,{headers: headers,responseType: 'blob' as 'json'});
+
+        }
+
 
     getEmployeePronunciation(request: EmployeePronunciationDetailRequest) : Observable <any>
         {
-         console.log("getEmployeePronunciation called");
-        //return new Observable<any()>();
-	        	let headers = new HttpHeaders({
-	        'Accept':'application/octet-stream' });
-         
-		         return this.httpClient.post<any>(this.baseURL+'/getPronunciationInformation/V1',request,{headers: headers,responseType: 'blob' as 'json'});
-        //return new Observable<StatusMessageResponse>();
+
+
+
+		         return this.httpClient.post<any>(this.baseURL+'/getPronunciationInformation/V1',request);
+
         }
 }

@@ -128,7 +128,7 @@
     >
 
     <!--  <mat-label>Select Locale</mat-label>-->
-      <mat-select  formControlName="locale" >
+      <mat-select   formControlName="locale" >
         <mat-option>--</mat-option>
         <mat-option>Select Locale</mat-option>
         <mat-option *ngFor="let data of locale " [value]="data">{{data.locale}} {{data.language}} </mat-option>
