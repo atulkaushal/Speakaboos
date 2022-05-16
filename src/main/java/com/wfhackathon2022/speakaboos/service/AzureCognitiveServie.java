@@ -2,7 +2,6 @@ package com.wfhackathon2022.speakaboos.service;
 
 
 import java.math.BigDecimal;
-import java.util.concurrent.Future;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,6 +17,7 @@ import com.microsoft.cognitiveservices.speech.audio.AudioConfig;
 import com.microsoft.cognitiveservices.speech.audio.AudioOutputStream;
 import com.microsoft.cognitiveservices.speech.audio.PushAudioOutputStream;
 import com.wfhackathon2022.speakaboos.exception.PronunciationException;
+import com.wfhackathon2022.speakaboos.model.SpeechLanguage;
 import com.wfhackathon2022.speakaboos.util.PushAudioOutputStreamSampleCallback;
 
 @Service
@@ -26,9 +26,17 @@ public class AzureCognitiveServie {
 	private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AzureCognitiveServie.class);
 
     // Replace below with your own subscription key
-    String speechSubscriptionKey = "8bbe96c8331e4f31896a8cc435bbe355";
+    private static final String speechSubscriptionKey = "8bbe96c8331e4f31896a8cc435bbe355";
     // Replace below with your own service region (e.g., "westus").
-    String serviceRegion = "eastus";
+    private static final String serviceRegion = "eastus";
+    
+    private static final String ssml =   "<speak version=\"1.0\" xmlns=\"http://www.w3.org/2001/10/synthesis\" xml:lang=\"en-US\">"
+    		                    + "<voice name=\"$varvoice$\">"
+    		                    + "<prosody rate=\"$varrate$\">"
+    		                    + "$vartext$"
+    		                    + "</prosody>"
+    		                    + "</voice>"
+    		                    + "</speak>";
     
     
 	public byte[] retrieveSpeech(String text, String language, BigDecimal speed) {
@@ -56,10 +64,10 @@ public class AzureCognitiveServie {
 			
 			//Set the language
 			config.setSpeechSynthesisLanguage(language);
-				        
-			Future<SpeechSynthesisResult> task = synth.SpeakTextAsync(text);
-
-            SpeechSynthesisResult result = task.get();
+			String voice = SpeechLanguage.getVoice(language);	        
+			String textWithRateSsml = ssml.replace("$varrate$", speed.toString()).replace("$vartext$", text).replace("$varvoice$", voice);
+			LOG.info("textWithRateSsml::"+textWithRateSsml);
+			SpeechSynthesisResult result = synth.SpeakSsml(textWithRateSsml);
 
             if (result.getReason() == ResultReason.SynthesizingAudioCompleted) {
             	LOG.info("AzureCognitiveServie::retrieveSpeech::completed successfully for "+ text + " in "+language);

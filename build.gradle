@@ -32,6 +32,7 @@ dependencies {
 	
 	testCompileOnly 'org.projectlombok:lombok:1.18.24'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+	testImplementation("junit:junit:4.13.2")
 	
 	implementation("org.hibernate:hibernate-validator:7.0.4.Final")
 	implementation("com.microsoft.sqlserver:mssql-jdbc:10.2.0.jre11")

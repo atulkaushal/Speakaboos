@@ -26,6 +26,7 @@ import com.wfhackathon2022.speakaboos.io.model.GetPronunciationInformationRespon
 import com.wfhackathon2022.speakaboos.io.model.ListEmployeesResponse;
 import com.wfhackathon2022.speakaboos.io.model.SavePronunciationInformationRequest;
 import com.wfhackathon2022.speakaboos.io.model.StatusMessageResponse;
+import com.wfhackathon2022.speakaboos.model.SpeechLanguage;
 import com.wfhackathon2022.speakaboos.service.AzureCognitiveServie;
 
 @Component
@@ -83,6 +84,9 @@ public class PronunciationDelegate {
 	public StatusMessageResponse savePronunciationInformation(SavePronunciationInformationRequest request) {
 		LOG.info("PronunciationDelegate::savePronunciationInformation::begin");
 		PronunciationPreferences preference = null;
+		if(request.getLocale() != null && !SpeechLanguage.isValidLanguage(request.getLocale())) {
+			throw new PronunciationException("Invalid locale: "+request.getLocale(), "WFH9007");
+		}
 		Optional<PronunciationPreferences> optionalPronunciationPreferences = pronunciationDAO
 				.getPronunciationPreferences(request.getEmployeeId());
 		
@@ -120,6 +124,9 @@ public class PronunciationDelegate {
 		} else {
 			preference = optionalPronunciationPreferences.get();
 		}
+		if(preference.getOptOutFlag()) {
+			throw new PronunciationException("Employee opted out", "WFH9005");
+		}
 		try {
 			preference.setAudio(nameAudio.getBytes());
 		} catch (IOException e) {
@@ -137,6 +144,10 @@ public class PronunciationDelegate {
 				.getPronunciationPreferences(request.getEmployeeId());
 		String language = "en-US";
 		BigDecimal speed = BigDecimal.valueOf(1);
+		if(request.getLanguage() != null && !SpeechLanguage.isValidLanguage(request.getLanguage())) {
+			throw new PronunciationException("Invalid language: "+request.getLanguage(), "WFH9006");
+		}
+		
 		if (optionalPronunciationPreferences.isPresent()) {
 			PronunciationPreferences pronunciationPreferences = optionalPronunciationPreferences.get();
 			language = request.getLanguage() != null ? request.getLanguage()
